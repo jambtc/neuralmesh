@@ -1,0 +1,88 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog entry
+        id: changelog
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          # Extract the section for this version from CHANGELOG.md
+          BODY=$(awk "/^## \[${VERSION}\]/{found=1; next} found && /^## /{exit} found{print}" CHANGELOG.md)
+          if [ -z "$BODY" ]; then
+            BODY="See CHANGELOG.md for details."
+          fi
+          echo "BODY<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$BODY" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
+          name: NeuralMesh ${{ steps.version.outputs.VERSION }}
+          body: ${{ steps.changelog.outputs.BODY }}
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.VERSION, '-') }}
+
+  # --- Phase 1+: uncomment when Go code exists ---
+  # build:
+  #   name: Build binaries
+  #   needs: release
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - os: ubuntu-latest
+  #           goos: linux
+  #           goarch: amd64
+  #         - os: ubuntu-latest
+  #           goos: linux
+  #           goarch: arm64
+  #         - os: macos-latest
+  #           goos: darwin
+  #           goarch: amd64
+  #         - os: macos-latest
+  #           goos: darwin
+  #           goarch: arm64
+  #         - os: windows-latest
+  #           goos: windows
+  #           goarch: amd64
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-go@v5
+  #       with:
+  #         go-version: "1.22"
+  #     - name: Build
+  #       env:
+  #         GOOS: ${{ matrix.goos }}
+  #         GOARCH: ${{ matrix.goarch }}
+  #       run: |
+  #         cd neuralmesh-client
+  #         EXT=""
+  #         if [ "${{ matrix.goos }}" = "windows" ]; then EXT=".exe"; fi
+  #         go build -ldflags="-X main.version=${{ github.ref_name }}" \
+  #           -o ../dist/neuralmesh-node-${{ matrix.goos }}-${{ matrix.goarch }}${EXT} \
+  #           ./cmd/neuralmesh-node
+  #     - name: Upload to release
+  #       uses: softprops/action-gh-release@v2
+  #       with:
+  #         files: dist/*

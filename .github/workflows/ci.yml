@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - develop
+
+# --- Phase 1+: uncomment when Go code exists ---
+# jobs:
+#   test:
+#     name: Test
+#     runs-on: ubuntu-latest
+#     services:
+#       postgres:
+#         image: postgres:16
+#         env:
+#           POSTGRES_DB: neuralmesh_test
+#           POSTGRES_USER: neuralmesh
+#           POSTGRES_PASSWORD: neuralmesh
+#         ports:
+#           - 5432:5432
+#         options: >-
+#           --health-cmd pg_isready
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 5
+#       redis:
+#         image: redis:7
+#         ports:
+#           - 6379:6379
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-go@v5
+#         with:
+#           go-version: "1.22"
+#           cache: true
+#       - name: Run tests
+#         env:
+#           DATABASE_URL: postgres://neuralmesh:neuralmesh@localhost:5432/neuralmesh_test
+#           REDIS_URL: redis://localhost:6379
+#         run: |
+#           cd neuralmesh-client
+#           go test ./... -race -coverprofile=coverage.out
+#           go tool cover -func=coverage.out
+
+#   lint:
+#     name: Lint
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-go@v5
+#         with:
+#           go-version: "1.22"
+#           cache: true
+#       - uses: golangci/golangci-lint-action@v4
+#         with:
+#           working-directory: neuralmesh-client
+#           version: latest
+
+#   build:
+#     name: Build
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-go@v5
+#         with:
+#           go-version: "1.22"
+#           cache: true
+#       - run: cd neuralmesh-client && go build ./...
+
+# Phase 0: placeholder job so CI is not empty
+jobs:
+  phase0:
+    name: Phase 0 — docs only
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "No code to test in Phase 0. CI will expand in Phase 1."

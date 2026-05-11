@@ -1,0 +1,77 @@
+name: NIP Proposal
+description: Propose a new NeuralMesh Implementation Plan
+labels: ["nip", "proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A NIP (NeuralMesh Implementation Plan) is a formal specification for a discrete unit of work.
+        See [docs/NIP-INDEX.md](../docs/NIP-INDEX.md) for existing NIPs and [docs/agents/AGENT-GUIDE.md](../docs/agents/AGENT-GUIDE.md) for the NIP format.
+
+  - type: input
+    id: title
+    attributes:
+      label: NIP title
+      placeholder: "Short descriptive title"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Foundation
+        - Protocol Design
+        - MVP Core
+        - AI Compute
+        - Economic Layer
+        - Security / Validation
+        - Community / Ecosystem
+        - Decentralization
+        - Cross-cutting
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Target phase
+      options:
+        - Phase 0
+        - Phase 1
+        - Phase 2
+        - Phase 3
+        - Phase 4
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What problem does this NIP solve? What is currently missing?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What should be implemented? List sub-tasks if possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How do we know this NIP is done?
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Which existing NIPs must be complete first?

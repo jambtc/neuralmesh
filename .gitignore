@@ -1,0 +1,64 @@
+# Go
+/neuralmesh-client/bin/
+/neuralmesh-client/dist/
+*.exe
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Build artifacts
+/dist/
+/bin/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Database
+*.db
+*.sqlite
+
+# Keys and secrets
+*.pem
+*.key
+*.p12
+id_rsa
+id_ed25519
+node_identity.json
+
+# Logs
+*.log
+logs/
+
+# Node.js (for docs site)
+node_modules/
+.next/
+out/
+
+# Python (for simulation tools)
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# MkDocs
+site/
+
+# Private docs (local only — not pushed to GitHub)
+docs/private/
